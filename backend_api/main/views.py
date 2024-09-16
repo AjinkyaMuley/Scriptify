@@ -201,3 +201,19 @@ class CategoryList(generics.ListCreateAPIView):
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.ProductCategory.objects.all()
     serializer_class = serializers.CategoryDetailSerializer
+
+
+@csrf_exempt
+def update_order_status(request,order_id):
+    if request.method == 'POST':
+        updateRes=models.Order.objects.filter(id=order_id).update(order_status=True)
+        msg={
+            'bool' : False,
+        }
+
+        if updateRes:
+            msg = {
+                'bool': True,
+            }
+
+    return JsonResponse(msg)
