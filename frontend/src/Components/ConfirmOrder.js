@@ -53,6 +53,7 @@ function ConfirmOrder() {
         var cartJson = JSON.parse(prevCart);
 
         var orderItemsList = [];
+        console.log(cartJson)
 
         if (cartJson != null) {
             cartJson.forEach((cart, index) => {
@@ -99,7 +100,7 @@ function ConfirmOrder() {
         // console.log(order_id,order_status)
         axios.post(baseUrl + 'update-order-status/' + orderID)
         .then(function(response){
-            console.log(response)
+            window.location.href = '/customer/orders'
         })
         .catch(function(error){
             console.log(error)

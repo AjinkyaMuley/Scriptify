@@ -171,6 +171,17 @@ class OrderItemList(generics.ListCreateAPIView):
     serializer_class = serializers.OrderItemSerializer
 
 
+class CustomerOrderItemList(generics.ListAPIView):
+    queryset = models.OrderItems.objects.all()
+    serializer_class = serializers.OrderItemSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        customer_id = self.kwargs['pk']
+        qs = qs.filter(order__customer__id=customer_id)
+        return qs
+
+
 class OrderDetail(generics.ListAPIView):
     # queryset = models.OrderItems.objects.all()
     serializer_class = serializers.OrderDetailSerializer
@@ -185,6 +196,8 @@ class OrderDetail(generics.ListAPIView):
 class CustomerAddressViewSets(viewsets.ModelViewSet):
     serializer_class = serializers.CustomerAddressSerializer
     queryset = models.CustomerAddress.objects.all()
+
+    
     
 
 class ProductRatingViewSets(viewsets.ModelViewSet):

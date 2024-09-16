@@ -82,9 +82,15 @@ class OrderSerializer(serializers.ModelSerializer):
         self.Meta.depth = 1
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    order = serializers.PrimaryKeyRelatedField(queryset=models.Order.objects.all(), write_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=models.Product.objects.all(), write_only=True)
+    order_details = OrderSerializer(source='order', read_only=True)
+    product_details = ProductDetailSerializer(source='product', read_only=True)
+
     class Meta:
         model = models.OrderItems
-        fields = ['id','order','product','qty','price']
+        fields = ['id', 'order', 'product', 'qty', 'price', 'order_details', 'product_details']
+
 
 
 
