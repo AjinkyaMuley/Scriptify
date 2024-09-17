@@ -3,7 +3,7 @@ import logo from '../logo.svg';
 import SingleProduct from './SingleProduct';
 import { useContext, useEffect, useState } from 'react';
 import SingleRelatedProduct from './SingleRelatedProduct';
-import { UserContext,CartContext } from '../Context';
+import { UserContext, CartContext } from '../Context';
 
 function ProductDetail() {
     const baseUrl = 'http://127.0.0.1:8000/api'
@@ -12,10 +12,11 @@ function ProductDetail() {
     const [productTags, setProductTags] = useState([]);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [cartButtonClickedStatus, setCartButtonClickedStatus] = useState(false)
-    let { product_slug, product_id } = useParams();
-    const {cartData,setCartData} = useContext(CartContext)
+    const { product_slug, product_id } = useParams();
+    const { cartData, setCartData } = useContext(CartContext)
+    // const [currency, setCurrency] = useState('inr')
 
-    console.log(productData)
+    const _currency = localStorage.getItem('currency');
 
     useEffect(() => {
         fetchData(baseUrl + '/product/' + product_id);
@@ -50,7 +51,7 @@ function ProductDetail() {
         if (!cartData || !Array.isArray(cartData)) {
             return false;
         }
-    
+
         // Check if any item in the cart matches the given productId
         return cartData.some(cartItem => cartItem.product && cartItem.product.id === productId);
     }
@@ -66,7 +67,7 @@ function ProductDetail() {
     const cartAddButtonHandler = () => {
         let prevCart = localStorage.getItem('cartData');
         let cartJSON = prevCart ? JSON.parse(prevCart) : []; // Initialize an empty array if no cart exists
-    
+
         const cartData = {
             'product': {
                 'id': productData.id,
@@ -78,31 +79,31 @@ function ProductDetail() {
                 'id': 1
             }
         };
-    
+
         // Add new cartData to the existing cart
         cartJSON.push(cartData);
         setCartData(cartJSON)
-    
+
         // Convert the updated cart to a string and store it in localStorage
         let cartString = JSON.stringify(cartJSON);
         localStorage.setItem('cartData', cartString);
-    
+
         // Update the button state
         setCartButtonClickedStatus(true);
     };
-    
+
     const cartRemoveButtonHandler = () => {
-        
+
         var prevCart = localStorage.getItem('cartData');
         var cartJSON = JSON.parse(prevCart);
-        cartJSON.map((cart,index) => {
-            if(cart != null && cart.product.id == productData.id){
-                cartJSON.splice(index,1)
+        cartJSON.map((cart, index) => {
+            if (cart != null && cart.product.id == productData.id) {
+                cartJSON.splice(index, 1)
             }
         });
-        
+
         var cartString = JSON.stringify(cartJSON);
-        localStorage.setItem('cartData',cartString)
+        localStorage.setItem('cartData', cartString)
         setCartButtonClickedStatus(false)
         setCartData(cartJSON)
     }
@@ -154,9 +155,13 @@ function ProductDetail() {
                 </div>
                 <div className="col-8">
                     <h3>{productData.title}</h3>
-                    <p>{productData.detail}
-                    </p>
-                    <h5 className='card-title'>Price: Rs. {productData.price}</h5>
+                    <p>{productData.detail}</p>
+                    {
+                        _currency != 'usd' && <h5 className='card-title'>Price: Rs. {productData.price}</h5>
+                    }
+                    {
+                        _currency == 'usd' && <h5 className='card-title'>Price: ${productData.price}</h5>
+                    }
                     <p className='mt-3'>
                         <Link title='Demo' to={`${productData.demo_url}`} target='_blank' className='btn btn-dark'>
                             <i className="fa-solid fa-cart-plus"></i> Demo

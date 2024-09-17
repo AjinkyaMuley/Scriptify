@@ -23,6 +23,8 @@ class ProductImagesInLine(admin.StackedInline):
 
 # Product admin configuration
 class ProductAdmin(admin.ModelAdmin):  # Corrected from models.ModelAdmin to admin.ModelAdmin
+    list_display = ['title','price','usd_price','downloads']
+    list_editable = ['usd_price']
     prepopulated_fields = {'slug': ('title',)}
     inlines = [
         ProductImagesInLine,

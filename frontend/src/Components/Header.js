@@ -1,10 +1,20 @@
 import { Link } from "react-router-dom"
-import { useContext } from "react";
-import { UserContext,CartContext } from "../Context";
+import { useContext, useState } from "react";
+import { UserContext, CartContext } from "../Context";
 
 function Header() {
     const userContext = useContext(UserContext);
-    const {cartData,setCartData} = useContext(CartContext)
+    const { cartData, setCartData } = useContext(CartContext);
+    const currentCurrency = localStorage.getItem('currency')
+    const [currency, setCurrency] = useState(currentCurrency)
+
+    const changeCurrency = (e) => {
+        var _currency = (e.target.value);
+        setCurrency(_currency)
+        localStorage.setItem('currency',_currency)
+        console.log(localStorage.getItem('currency'))
+    }
+    
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-success">
@@ -60,6 +70,24 @@ function Header() {
                             <li className="nav-item">
                                 <Link className="nav-link active" to="/checkout">My Cart ({cartData ? cartData.length : 0})
                                 </Link>
+                            </li>
+                            <li className="nav-item">
+                                <div className="nav-link">
+                                    <select onChange={changeCurrency}>
+                                        {
+                                            currency != 'usd' && <>
+                                                <option value="inr" selected>INR</option>
+                                                <option value="usd">USD</option>
+                                            </>
+                                        }
+                                        {
+                                            currency == 'usd' && <>
+                                                <option value="inr" >INR</option>
+                                                <option value="usd" selected>USD</option>
+                                            </>
+                                        }
+                                    </select>
+                                </div>
                             </li>
                         </ul>
                     </div>
