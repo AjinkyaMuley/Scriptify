@@ -67,7 +67,7 @@ function Orders() {
                                                     <td>
                                                         {
                                                             item.order_details.order_status &&
-                                                            <a href='#' className='btn btn-primary'>Download</a>
+                                                            <a download={true} target='_blank' href={item.product_details.product_file} className='btn btn-primary'>Download</a>
                                                         }
                                                     </td>
                                                 </tr>

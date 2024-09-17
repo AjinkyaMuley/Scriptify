@@ -24,7 +24,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
         fields = ['id','category','vendor','title','slug','tag_list','detail','price','product_ratings',
-                  'image']
+                  'image','product_file']
 
     def __init__(self,*args,**kwargs):
         super(ProductListSerializer,self).__init__(*args,**kwargs)
@@ -40,7 +40,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     product_imgs = ProductImageSerializer(many=True,read_only=True)
     class Meta:
         model = models.Product
-        fields = ['id','category','vendor','title','slug','tag_list','detail','price','product_ratings','product_imgs','demo_url','image']
+        fields = ['id','category','vendor','title','slug','tag_list','detail','price','product_ratings','product_imgs','demo_url','image','product_file']
 
     def __init__(self,*args,**kwargs):
         super(ProductDetailSerializer,self).__init__(*args,**kwargs)
