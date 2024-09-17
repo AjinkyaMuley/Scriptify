@@ -100,10 +100,10 @@ function ConfirmOrder() {
         // console.log(order_id,order_status)
         axios.post(baseUrl + 'update-order-status/' + orderID)
         .then(function(response){
-            window.location.href = '/customer/orders'
+            window.location.href = '/order/success'
         })
         .catch(function(error){
-            console.log(error)
+            window.location.href = '/order/failure'
         })
     }
 
