@@ -230,3 +230,21 @@ def update_order_status(request,order_id):
             }
 
     return JsonResponse(msg)
+
+
+@csrf_exempt
+def update_product_download_count(request,product_id):
+    if request.method == 'POST':
+        product = models.Product.objects.get(id=product_id)
+        product.downloads += 1
+        updateRes=models.Product.objects.filter(id=product_id).update(downloads=product.downloads)
+        msg={
+            'bool' : False,
+        }
+
+        if updateRes:
+            msg = {
+                'bool': True,
+            }
+
+    return JsonResponse(msg)

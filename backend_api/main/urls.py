@@ -29,6 +29,7 @@ urlpatterns = [
     path('orderitems/', views.OrderItemList.as_view()),
     path('customer/<int:pk>/orderitems/', views.CustomerOrderItemList.as_view()),
     path('update-order-status/<int:order_id>', views.update_order_status,name='update_order_status'),
+    path('update_product_download_count/<int:product_id>', views.update_product_download_count,name='update_product_download_count'),
 ]
 
 
