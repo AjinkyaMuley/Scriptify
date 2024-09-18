@@ -6,7 +6,7 @@ function Home() {
     const baseUrl = 'http://127.0.0.1:8000/api';
     const [Products, setProducts] = useState([])
     useEffect(() => {
-        fetchData(baseUrl + '/products/?fetch_limit=2')
+        fetchData(baseUrl + '/products/?fetch_limit=4')
     }, [])
 
     function fetchData(baseUrl) {
