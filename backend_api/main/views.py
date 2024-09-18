@@ -35,6 +35,10 @@ class ProductList(generics.ListCreateAPIView):
                 qs = qs.filter(category=category)
             except models.ProductCategory.DoesNotExist:
                 qs = qs.none()  # Return empty queryset if category does not exist
+
+        if 'fetch_limit' in self.request.GET:
+            limit = int(self.request.GET['fetch_limit'])
+            qs = qs.order_by('-id')[:limit]
         return qs
     
 

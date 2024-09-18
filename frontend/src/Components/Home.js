@@ -1,22 +1,21 @@
 import { Link } from 'react-router-dom';
 import logo from '../logo.svg';
 import SingleProduct from './SingleProduct';
+import { useEffect, useState } from 'react';
 function Home() {
+    const baseUrl = 'http://127.0.0.1:8000/api';
+    const [Products, setProducts] = useState([])
+    useEffect(() => {
+        fetchData(baseUrl + '/products/?fetch_limit=2')
+    }, [])
 
-    const products = [
-        {
-            'title' : 'Python',
-            'price' : 100
-        },
-        {
-            'title' : 'Django',
-            'price' : 150
-        },
-        {
-            'title' : 'Flask',
-            'price' : 200
-        },
-    ]
+    function fetchData(baseUrl) {
+        fetch(baseUrl)
+            .then((response) => response.json())
+            .then((data) => {
+                setProducts(data.results)
+            })
+    }
     
     return (
 
@@ -26,7 +25,7 @@ function Home() {
                 <h3 className='mb-4'>Latest Products <Link to='/products' className='float-end btn btn-dark'>View All Products <i class="fa-solid fa-arrow-right-long "></i></Link></h3>
                 <div className='row mb-4'>
                 {
-                        products.map((p) => <SingleProduct product={p}/>)
+                        Products.map((p) => <SingleProduct product={p}/>)
                 }
                 </div>
                 {/* End Latest Products */}
