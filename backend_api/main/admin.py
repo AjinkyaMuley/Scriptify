@@ -12,7 +12,7 @@ class CustomerAdmin(admin.ModelAdmin):
 admin.site.register(models.Customer,CustomerAdmin)
 
 # admin.site.register(models.Order)
-admin.site.register(models.OrderItems)
+# admin.site.register(models.OrderItems)
 admin.site.register(models.CustomerAddress)
 admin.site.register(models.ProductRating)
 admin.site.register(models.ProductImage)
@@ -36,7 +36,14 @@ admin.site.register(models.Product, ProductAdmin)
 
 # Product admin configuration
 class OrderAdmin(admin.ModelAdmin):  # Corrected from models.ModelAdmin to admin.ModelAdmin
-    list_display = ['id','customer','order_time','order_status']
+    list_display = ['id','customer','order_time','order_status','total_amount','total_usd_amount']
 
 # Register the Product model with the customized ProductAdmin
 admin.site.register(models.Order, OrderAdmin)
+
+# Product admin configuration
+class OrderItemsAdmin(admin.ModelAdmin):  # Corrected from models.ModelAdmin to admin.ModelAdmin
+    list_display = ['id','order','product','qty','price','usd_price']
+
+# Register the Product model with the customized ProductAdmin
+admin.site.register(models.OrderItems, OrderItemsAdmin)

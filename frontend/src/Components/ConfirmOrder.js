@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { CartContext, UserContext } from "../Context";
+import { CartContext, CurrencyContext, UserContext } from "../Context";
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import axios from "axios";
 
@@ -9,8 +9,10 @@ function ConfirmOrder() {
     const userContext = useContext(UserContext);
     const [orderStatus, setOrderStatus] = useState(false)
     const [orderID, setOrderID] = useState('');
+    const [orderAmount, setOrderAmount] = useState(0)
     const [payMethod, setPayMethod] = useState('')
     const { cartData, setCartData } = useContext(CartContext);
+    const { currencyData } = useContext(CurrencyContext)
 
 
     useEffect(() => {
@@ -30,14 +32,31 @@ function ConfirmOrder() {
         if (!customerID) {
             console.log('Customer ID is missing');
         } else {
+
+            var prevCart = localStorage.getItem('cartData');
+            var cartJson = JSON.parse(prevCart);
+            var total_amount = 0;
+            var total_usd_amount = 0;
+            cartJson.map((cart, index) => {
+                total_amount += parseFloat(cart.product.price)
+                total_usd_amount += parseFloat(cart.product.usd_price)
+            })
+
             const formData = new FormData();
             formData.append('customer', customerID);
+            formData.append('total_amount', total_amount);
+            formData.append('total_usd_amount', total_usd_amount);
 
 
             // Submit Data
             axios.post(baseUrl + 'orders/', formData)
                 .then(function (response) {
                     var orderID = response.data.id;
+                    if (currencyData == 'usd') {
+                        setOrderAmount(response.data.total_usd_amount)
+                    } else {
+                        setOrderAmount(response.data.total_amount)
+                    }
                     setOrderID(orderID)
                     orderItems(orderID);
                     setConfirmOrder(true)
@@ -55,6 +74,7 @@ function ConfirmOrder() {
         var orderItemsList = [];
         console.log(cartJson)
 
+        var sum = 0;
         if (cartJson != null) {
             cartJson.forEach((cart, index) => {
                 const formData = new FormData();
@@ -62,6 +82,7 @@ function ConfirmOrder() {
                 formData.append('product', cart.product.id);
                 formData.append('qty', 1);
                 formData.append('price', cart.product.price);
+                formData.append('usd_price', cart.product.usd_price);
 
                 // Submit Data
                 axios.post(baseUrl + 'orderitems/', formData)
@@ -96,15 +117,15 @@ function ConfirmOrder() {
             alert('Select Payment Method')
     }
 
-    function updateOrderStatus(order_id,order_status){
+    function updateOrderStatus(order_id, order_status) {
         // console.log(order_id,order_status)
         axios.post(baseUrl + 'update-order-status/' + orderID)
-        .then(function(response){
-            window.location.href = '/order/success'
-        })
-        .catch(function(error){
-            window.location.href = '/order/failure'
-        })
+            .then(function (response) {
+                window.location.href = '/order/success'
+            })
+            .catch(function (error) {
+                window.location.href = '/order/failure'
+            })
     }
 
     useEffect(() => {
@@ -132,26 +153,38 @@ function ConfirmOrder() {
                     </div>
                     <div className="card p-3 mt-4">
                         <form>
-                            <div className="form-group">
+                            {
+                                currencyData == 'usd' &&
+                                <div className="form-group">
                                 <label>
                                     <input onChange={() => changePaymentMethod('paypal')} type="radio" name="payMethod" /> PayPal
                                 </label>
                             </div>
-                            <div className="form-group">
+                            }
+                            {
+                                currencyData == 'usd' &&
+                                <div className="form-group">
                                 <label>
-                                    <input type="radio" onChange={() => changePaymentMethod('stripe')} name="payMethod" /> Stripe
+                                    <input onChange={() => changePaymentMethod('paypal')} type="radio" name="payMethod" /> Stripe   
                                 </label>
                             </div>
-                            <div className="form-group">
-                                <label>
-                                    <input type="radio" onChange={() => changePaymentMethod('razorpay')} name="payMethod" /> RazorPay
-                                </label>
-                            </div>
-                            <div className="form-group">
-                                <label>
-                                    <input type="radio" onChange={() => changePaymentMethod('paytm')} name="payMethod" /> PayTm
-                                </label>
-                            </div>
+                            }
+                            {
+                                currencyData != 'usd' &&
+                                <div className="form-group">
+                                    <label>
+                                        <input type="radio" onChange={() => changePaymentMethod('razorpay')} name="payMethod" /> RazorPay
+                                    </label>
+                                </div>
+                            }
+                            {
+                                currencyData != 'usd' &&
+                                <div className="form-group">
+                                    <label>
+                                        <input type="radio" onChange={() => changePaymentMethod('razorpay')} name="payMethod" /> PayTm
+                                    </label>
+                                </div>
+                            }
                             <button type="button" onClick={PayNowButton} className="btn btn-sm btn-success mt-3">Next</button>
                         </form>
                         {payMethod === 'paypal' &&
@@ -164,7 +197,7 @@ function ConfirmOrder() {
                                                 {
                                                     amount: {
                                                         currency_code: 'USD',
-                                                        value: '3'
+                                                        value: { orderAmount }
                                                     }
                                                 }
                                             ]

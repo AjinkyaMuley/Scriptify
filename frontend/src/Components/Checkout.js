@@ -1,19 +1,25 @@
 import { Link } from 'react-router-dom';
 import logo from '../logo.svg';
 import { useContext, useState } from 'react';
-import { CartContext } from '../Context';
+import { CartContext, CurrencyContext } from '../Context';
 
 function Checkout(props) {
     const [productData, setProductData] = useState([]);
     const [cartButtonClickedStatus, setCartButtonClickedStatus] = useState(false)
     const { cartData, setCartData } = useContext(CartContext);
-    console.log(cartData);
+
+    const { currencyData } = useContext(CurrencyContext)
 
 
     let sum = 0;
     if (cartData && cartData.length > 0) {
         cartData.map((item, index) => {
-            sum += parseFloat(item.product.price)
+            if (currencyData == 'inr' || currencyData == undefined) {
+                sum += parseFloat(item.product.price)
+            }
+            else if (currencyData == 'usd') {
+                sum += parseFloat(item.product.usd_price)
+            }
         });
     }
     const cartRemoveButtonHandler = (product_id) => {
@@ -59,7 +65,14 @@ function Checkout(props) {
                                                             <img src={item.product.image} className="img-thumbnail" width={'80'} alt={item.product.title} /> {item.product.title}
                                                         </Link>
                                                     </td>
-                                                    <td>Rs. {item.product.price}</td>
+                                                    {
+                                                        (currencyData === 'inr' || currencyData === undefined) &&
+                                                        <td>Rs. {item.product.price}</td>
+                                                    }
+                                                    {
+                                                        currencyData == 'usd' &&
+                                                        <td>$ {item.product.usd_price}</td>
+                                                    }
                                                     <td>
                                                         <button title='Delete from Cart' type='button' onClick={() => cartRemoveButtonHandler(item.product.id)} className='btn btn-warning ms-1'>
                                                             <i className="fa-solid fa-cart-plus"></i> Delete from Cart
@@ -74,7 +87,14 @@ function Checkout(props) {
                                     <tr>
                                         <th></th>
                                         <th>Total</th>
-                                        <th>Rs. {sum}</th>
+                                        {
+                                            (currencyData === 'inr' || currencyData === undefined) &&
+                                            <td>Rs. {sum}</td>
+                                        }
+                                        {
+                                            currencyData == 'usd' &&
+                                            <td>$ {sum}</td>
+                                        }
                                         <td></td>
                                     </tr>
                                     <tr>

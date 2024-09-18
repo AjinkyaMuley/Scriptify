@@ -75,7 +75,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Order
-        fields = ['id', 'customer','order_status']
+        fields = ['id', 'customer','order_status','total_amount','total_usd_amount']
 
     def __init__(self,*args,**kwargs):
         super(OrderSerializer,self).__init__(*args,**kwargs)
@@ -89,7 +89,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.OrderItems
-        fields = ['id', 'order', 'product', 'qty', 'price', 'order_details', 'product_details']
+        fields = ['id', 'order', 'product', 'qty', 'price', 'usd_price','order_details', 'product_details']
 
 
 

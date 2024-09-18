@@ -72,12 +72,14 @@ console.log(productData)
             'product': {
                 'id': productData.id,
                 'price': productData.price,
+                'usd_price': productData.usd_price,
                 'title': productData.title,
                 'image': productData.image,
             },
             'user': {
                 'id': 1
-            }
+            },
+            'total_amount' : 10
         };
 
         // Add new cartData to the existing cart
