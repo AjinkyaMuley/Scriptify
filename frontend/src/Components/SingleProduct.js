@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom';
 import logo from '../logo.svg';
+import { useContext } from 'react';
+import { CurrencyContext } from '../Context';
 
 function SingleProduct(props) {
+
+    const {currencyData} = useContext(CurrencyContext)
+
     return (
         <div className='col-12 col-md-3 col-sm-4 mb-4'>
             <div className="card shadow" style={{ width: '18rem' }}>
@@ -11,7 +16,14 @@ function SingleProduct(props) {
                 <hr />
                 <div className="card-body">
                     <h5 className="card-title"><Link to={`/product/${props.product.title}/${props.product.id}`}>{props.product.title}</Link></h5>
-                    <h5 className="card-title text-muted">Price: <span>Rs. {props.product.price}</span></h5>
+                    {
+                        currencyData != 'usd' && 
+                        <h5 className="card-title text-muted">Price: <span>Rs. {props.product.price}</span></h5>
+                    }
+                    {
+                        currencyData == 'usd' && 
+                        <h5 className="card-title text-muted">Price: <span>${props.product.usd_price}</span></h5>
+                    }
                 </div>
                 <div className='card-footer'>
                     <button title='Add to Cart' className='btn btn-success btn-sm'>

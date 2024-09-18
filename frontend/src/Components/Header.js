@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom"
 import { useContext, useState } from "react";
-import { UserContext, CartContext } from "../Context";
+import { UserContext, CartContext,CurrencyContext } from "../Context";
 
 function Header() {
     const userContext = useContext(UserContext);
     const { cartData, setCartData } = useContext(CartContext);
-    const currentCurrency = localStorage.getItem('currency')
-    const [currency, setCurrency] = useState(currentCurrency)
+
+    const {currencyData,setCurrencyData} = useContext(CurrencyContext)
 
     const changeCurrency = (e) => {
         var _currency = (e.target.value);
-        setCurrency(_currency)
         localStorage.setItem('currency',_currency)
+        setCurrencyData(_currency)
         console.log(localStorage.getItem('currency'))
     }
     
@@ -75,13 +75,13 @@ function Header() {
                                 <div className="nav-link">
                                     <select onChange={changeCurrency}>
                                         {
-                                            currency != 'usd' && <>
+                                            currencyData != 'usd' && <>
                                                 <option value="inr" selected>INR</option>
                                                 <option value="usd">USD</option>
                                             </>
                                         }
                                         {
-                                            currency == 'usd' && <>
+                                            currencyData == 'usd' && <>
                                                 <option value="inr" >INR</option>
                                                 <option value="usd" selected>USD</option>
                                             </>

@@ -3,7 +3,7 @@ import logo from '../logo.svg';
 import SingleProduct from './SingleProduct';
 import { useContext, useEffect, useState } from 'react';
 import SingleRelatedProduct from './SingleRelatedProduct';
-import { UserContext, CartContext } from '../Context';
+import { UserContext, CartContext, CurrencyContext } from '../Context';
 
 function ProductDetail() {
     const baseUrl = 'http://127.0.0.1:8000/api'
@@ -13,10 +13,10 @@ function ProductDetail() {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [cartButtonClickedStatus, setCartButtonClickedStatus] = useState(false)
     const { product_slug, product_id } = useParams();
-    const { cartData, setCartData } = useContext(CartContext)
+    const { cartData, setCartData } = useContext(CartContext);
+    const {currencyData} = useContext(CurrencyContext);
     // const [currency, setCurrency] = useState('inr')
 
-    const _currency = localStorage.getItem('currency');
 
     useEffect(() => {
         fetchData(baseUrl + '/product/' + product_id);
@@ -32,7 +32,7 @@ function ProductDetail() {
                 setProductTags(data.tag_list)
             })
     }
-
+console.log(productData)
     function fetchRelatedData(baseUrl) {
         fetch(baseUrl)
             .then((response) => response.json())
@@ -157,10 +157,10 @@ function ProductDetail() {
                     <h3>{productData.title}</h3>
                     <p>{productData.detail}</p>
                     {
-                        _currency != 'usd' && <h5 className='card-title'>Price: Rs. {productData.price}</h5>
+                        currencyData != 'usd' && <h5 className='card-title'>Price: Rs. {productData.price}</h5>
                     }
                     {
-                        _currency == 'usd' && <h5 className='card-title'>Price: ${productData.price}</h5>
+                        currencyData == 'usd' && <h5 className='card-title'>Price: ${productData.usd_price}</h5>
                     }
                     <p className='mt-3'>
                         <Link title='Demo' to={`${productData.demo_url}`} target='_blank' className='btn btn-dark'>

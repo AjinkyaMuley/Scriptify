@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import SingleProduct from './SingleProduct';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { CurrencyContext } from '../Context';
 
 
 function AllProducts() {
     const baseUrl = 'http://127.0.0.1:8000/api'
     const [Products, setProducts] = useState([])
     const [totalResult, setTotalResult] = useState(0)
+    const {currencyData} = useContext(CurrencyContext)
 
     useEffect(() => {
         fetchData(baseUrl + '/products/')

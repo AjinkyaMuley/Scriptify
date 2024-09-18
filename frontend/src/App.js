@@ -40,52 +40,56 @@ import Reports from './Components/Seller/Reports';
 import SellerProfile from './Components/Seller/SellerProfile';
 import SellerChangePassword from './Components/Seller/SellerChangePassword';
 import TagProducts from './Components/TagProducts';
-import { CartContext } from './Context';
+import { CartContext, CurrencyContext } from './Context';
 import { useState } from 'react';
 
 const checkCart = localStorage.getItem('cartData')
+const currentCurrency = localStorage.getItem('currency')
 
 function App() {
-  const [cartData,setCartData] = useState(JSON.parse(checkCart))
+  const [cartData, setCartData] = useState(JSON.parse(checkCart));
+  const [currencyData, setCurrencyData] = useState(currentCurrency)
   return (
-    <CartContext.Provider value={{cartData,setCartData}}>
-      <Header />
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/categories' element={<Categories />} />
-        <Route path='/products' element={<AllProducts />} />
-        <Route path='/category/:category_slug/:category_id' element={<CategoryProducts />} />
-        <Route path='/products/:tag' element={<TagProducts />} />
-        <Route path='/product/:product_slug/:product_id' element={<ProductDetail />} />
-        <Route path='/checkout' element={<Checkout />} />
-        <Route path='/confirm-order' element={<ConfirmOrder />} />
-        <Route path='/order/success' element={<OrderSuccess />} />
-        <Route path='/order/failure' element={<OrderFailure />} />
-        {/* Customer Routes */}
-        <Route path='/customer/register' element={<Register />} />
-        <Route path='/customer/login' element={<Login />} />
-        <Route path='/customer/logout' element={<Logout />} />
-        <Route path='/customer/dashboard' element={<Dashboard />} />
-        <Route path='/customer/orders' element={<Orders />} />
-        <Route path='/customer/wishlist' element={<Wishlist />} />
-        <Route path='/customer/profile' element={<Profile />} />
-        <Route path='/customer/change-password' element={<ChangePassword />} />
-        <Route path='/customer/addresses' element={<AddressList />} />
-        <Route path='/customer/add-address' element={<AddAddress />} />
-        {/* Seller Routes */}
-        <Route path='/seller/login' element={<SellerLogin />} />
-        <Route path='/seller/register' element={<SellerRegister />} />
-        <Route path='/seller/dashboard' element={<SellerDashboard />} />
-        <Route path='/seller/products' element={<SellerProducts />} />
-        <Route path='/seller/add-product' element={<AddProduct />} />
-        <Route path='/seller/orders' element={<SellerOrders />} />
-        <Route path='/seller/customers' element={<Customers />} />
-        <Route path='/seller/reports' element={<Reports />} />
-        <Route path='/seller/profile' element={<SellerProfile />} />
-        <Route path='/seller/change-password' element={<SellerChangePassword />} />
-      </Routes>
-      <Footer />
-    </CartContext.Provider>
+    <CurrencyContext.Provider value={{ currencyData, setCurrencyData }}>
+      <CartContext.Provider value={{ cartData, setCartData }}>
+        <Header />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/categories' element={<Categories />} />
+          <Route path='/products' element={<AllProducts />} />
+          <Route path='/category/:category_slug/:category_id' element={<CategoryProducts />} />
+          <Route path='/products/:tag' element={<TagProducts />} />
+          <Route path='/product/:product_slug/:product_id' element={<ProductDetail />} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path='/confirm-order' element={<ConfirmOrder />} />
+          <Route path='/order/success' element={<OrderSuccess />} />
+          <Route path='/order/failure' element={<OrderFailure />} />
+          {/* Customer Routes */}
+          <Route path='/customer/register' element={<Register />} />
+          <Route path='/customer/login' element={<Login />} />
+          <Route path='/customer/logout' element={<Logout />} />
+          <Route path='/customer/dashboard' element={<Dashboard />} />
+          <Route path='/customer/orders' element={<Orders />} />
+          <Route path='/customer/wishlist' element={<Wishlist />} />
+          <Route path='/customer/profile' element={<Profile />} />
+          <Route path='/customer/change-password' element={<ChangePassword />} />
+          <Route path='/customer/addresses' element={<AddressList />} />
+          <Route path='/customer/add-address' element={<AddAddress />} />
+          {/* Seller Routes */}
+          <Route path='/seller/login' element={<SellerLogin />} />
+          <Route path='/seller/register' element={<SellerRegister />} />
+          <Route path='/seller/dashboard' element={<SellerDashboard />} />
+          <Route path='/seller/products' element={<SellerProducts />} />
+          <Route path='/seller/add-product' element={<AddProduct />} />
+          <Route path='/seller/orders' element={<SellerOrders />} />
+          <Route path='/seller/customers' element={<Customers />} />
+          <Route path='/seller/reports' element={<Reports />} />
+          <Route path='/seller/profile' element={<SellerProfile />} />
+          <Route path='/seller/change-password' element={<SellerChangePassword />} />
+        </Routes>
+        <Footer />
+      </CartContext.Provider>
+    </CurrencyContext.Provider>
   );
 }
 
