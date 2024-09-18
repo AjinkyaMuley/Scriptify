@@ -47,3 +47,11 @@ class OrderItemsAdmin(admin.ModelAdmin):  # Corrected from models.ModelAdmin to 
 
 # Register the Product model with the customized ProductAdmin
 admin.site.register(models.OrderItems, OrderItemsAdmin)
+
+
+# Product admin configuration
+class WishListAdmin(admin.ModelAdmin):  # Corrected from models.ModelAdmin to admin.ModelAdmin
+    list_display = ['id','product','customer']
+
+# Register the Product model with the customized ProductAdmin
+admin.site.register(models.WishList, WishListAdmin)

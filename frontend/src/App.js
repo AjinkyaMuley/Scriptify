@@ -40,18 +40,21 @@ import Reports from './Components/Seller/Reports';
 import SellerProfile from './Components/Seller/SellerProfile';
 import SellerChangePassword from './Components/Seller/SellerChangePassword';
 import TagProducts from './Components/TagProducts';
-import { CartContext, CurrencyContext } from './Context';
+import { CartContext, CurrencyContext, UserContext } from './Context';
 import { useState } from 'react';
 
 const checkCart = localStorage.getItem('cartData')
-const currentCurrency = localStorage.getItem('currency')
+const currentCurrency = localStorage.getItem('currency');
+const check_customer = localStorage.getItem('customer_login');
 
 function App() {
+  console.log(check_customer)
   const [cartData, setCartData] = useState(JSON.parse(checkCart));
   const [currencyData, setCurrencyData] = useState(currentCurrency)
   return (
     <CurrencyContext.Provider value={{ currencyData, setCurrencyData }}>
       <CartContext.Provider value={{ cartData, setCartData }}>
+      <UserContext.Provider value={check_customer}>
         <Header />
         <Routes>
           <Route path='/' element={<Home />} />
@@ -88,6 +91,7 @@ function App() {
           <Route path='/seller/change-password' element={<SellerChangePassword />} />
         </Routes>
         <Footer />
+        </UserContext.Provider>
       </CartContext.Provider>
     </CurrencyContext.Provider>
   );

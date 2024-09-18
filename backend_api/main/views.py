@@ -252,3 +252,55 @@ def update_product_download_count(request,product_id):
             }
 
     return JsonResponse(msg)
+
+
+#   WishList
+class WishList(generics.ListCreateAPIView):
+    queryset = models.WishList.objects.all()
+    serializer_class = serializers.WishListSerializer
+
+
+@csrf_exempt
+def check_in_wishlist(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('product')
+        customer_id = request.POST.get('customer')
+        checkWishList = models.WishList.objects.filter(product__id=product_id,customer__id=customer_id).count()
+
+        msg={
+            'bool' : False,
+        }
+        if checkWishList > 0:
+            msg = {
+                'bool': True,
+            }
+
+    return JsonResponse(msg)
+
+class CustomerWishItemList(generics.ListAPIView):
+    queryset = models.WishList.objects.all()
+    serializer_class = serializers.WishListSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        customer_id = self.kwargs['pk']
+        qs = qs.filter(customer__id=customer_id)
+        return qs
+    
+
+
+@csrf_exempt
+def remove_from_wishlist(request):
+    if request.method == 'POST':
+        wishlist_id = request.POST.get('wishlist_id')
+        res = models.WishList.objects.filter(id=wishlist_id).delete()
+
+        msg={
+            'bool' : False,
+        }
+        if res:
+            msg = {
+                'bool': True,
+            }
+
+    return JsonResponse(msg)

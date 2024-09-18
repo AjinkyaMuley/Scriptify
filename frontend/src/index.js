@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { UserContext } from './Context';
 
-const check_customer = (localStorage.getItem('customer_login'));
+const check_customer = localStorage.getItem('customer_login');
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

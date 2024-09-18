@@ -19,6 +19,9 @@ class ProductCategory(models.Model):
     def __str__(self):
         return self.title
     
+    class Meta:
+        verbose_name_plural = 'Product Categories'
+    
 # Product
 class Product(models.Model):
     category = models.ForeignKey(ProductCategory,on_delete=models.SET_NULL,null=True,                   related_name='category_products')
@@ -72,6 +75,9 @@ class OrderItems(models.Model):
 
     def __str__(self):
         return self.product.title
+    
+    class Meta:
+        verbose_name_plural = 'Order Items'
 
 
 #   Customer Address Model
@@ -82,6 +88,9 @@ class CustomerAddress(models.Model):
 
     def __str__(self):
         return self.address
+    
+    class Meta:
+        verbose_name_plural = 'Customer Addresses'
     
 
 # Product Rating and Reviews
@@ -103,3 +112,15 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.image.url
+    
+
+#   WishList Model
+class WishList(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Wish List'
+    
+    def __str__(self):
+        return f"{self.product.title} - {self.customer.user.first_name}"

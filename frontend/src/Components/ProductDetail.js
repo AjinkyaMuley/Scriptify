@@ -4,6 +4,7 @@ import SingleProduct from './SingleProduct';
 import { useContext, useEffect, useState } from 'react';
 import SingleRelatedProduct from './SingleRelatedProduct';
 import { UserContext, CartContext, CurrencyContext } from '../Context';
+import axios from 'axios';
 
 function ProductDetail() {
     const baseUrl = 'http://127.0.0.1:8000/api'
@@ -14,13 +15,17 @@ function ProductDetail() {
     const [cartButtonClickedStatus, setCartButtonClickedStatus] = useState(false)
     const { product_slug, product_id } = useParams();
     const { cartData, setCartData } = useContext(CartContext);
-    const {currencyData} = useContext(CurrencyContext);
+    const [productInWishlist, setProductInWishlist] = useState(false)
+    const { currencyData } = useContext(CurrencyContext);
+    const userContext = useContext(UserContext);
     // const [currency, setCurrency] = useState('inr')
 
+    // console.log(userContext)
 
     useEffect(() => {
         fetchData(baseUrl + '/product/' + product_id);
-        fetchRelatedData(baseUrl + '/related-products/' + product_id)
+        fetchRelatedData(baseUrl + '/related-products/' + product_id);
+        checkProductInWishList(product_id)
     }, []);
 
     function fetchData(baseUrl) {
@@ -32,7 +37,7 @@ function ProductDetail() {
                 setProductTags(data.tag_list)
             })
     }
-console.log(productData)
+    console.log(productData)
     function fetchRelatedData(baseUrl) {
         fetch(baseUrl)
             .then((response) => response.json())
@@ -79,7 +84,7 @@ console.log(productData)
             'user': {
                 'id': 1
             },
-            'total_amount' : 10
+            'total_amount': 10
         };
 
         // Add new cartData to the existing cart
@@ -93,6 +98,63 @@ console.log(productData)
         // Update the button state
         setCartButtonClickedStatus(true);
     };
+
+    function checkProductInWishList(product_id) {
+        const customerID = localStorage.getItem('customer_id');
+        if (!customerID) {
+            console.log('Customer ID is missing');
+            return;  // Exit if no customer ID is found
+        }
+
+        const formData = new FormData();
+        formData.append('customer', customerID);
+        formData.append('product', product_id);
+
+        // For debugging: Log formData entries
+        // for (let pair of formData.entries()) {
+        //     console.log(`${pair[0]}: ${pair[1]}`);
+        // }
+
+        // Send the form data via POST
+        axios.post(baseUrl + '/check-in-wishlist/', formData)
+            .then(function (response) {
+                if (response.data.bool == true)
+                    setProductInWishlist(true)
+                else
+                    setProductInWishlist(false)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    function saveInWishList() {
+        const customerID = localStorage.getItem('customer_id');
+        if (!customerID) {
+            console.log('Customer ID is missing');
+            return;  // Exit if no customer ID is found
+        }
+
+        const formData = new FormData();
+        formData.append('customer', customerID);
+        formData.append('product', productData.id);
+
+        // For debugging: Log formData entries
+        for (let pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+
+        // Send the form data via POST
+        axios.post(baseUrl + '/wishlist/', formData)
+            .then(function (response) {
+                if(response.data.id){
+                    setProductInWishlist(true)
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     const cartRemoveButtonHandler = () => {
 
@@ -181,9 +243,24 @@ console.log(productData)
                         <button title='Buy Now' className='btn btn-success ms-1'>
                             <i className="fa-solid fa-bag-shopping"></i> Buy Now
                         </button>
-                        <button title='Add to WishList' className='btn btn-danger ms-1'>
-                            <i className="fa-solid fa-heart"></i> Wishlist
-                        </button>
+                        {
+                            (userContext && !productInWishlist) &&
+                            <button onClick={saveInWishList} title='Add to WishList' className='btn btn-danger ms-1'>
+                                <i className="fa-solid fa-heart"></i> Wishlist
+                            </button>
+                        }
+                        {
+                            (userContext == null) &&
+                            <button title='Add to WishList' className='btn btn-danger ms-1 disabled'>
+                                <i className="fa-solid fa-heart"></i> Wishlist
+                            </button>
+                        }
+                        {
+                            (userContext && productInWishlist) &&
+                            <button title='Add to WishList' className='btn btn-danger ms-1 disabled'>
+                                <i className="fa-solid fa-heart"></i> Wishlist
+                            </button>
+                        }
                     </p>
                     <div className='producttags mt-4'>
                         <h5>Tags</h5>

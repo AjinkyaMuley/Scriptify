@@ -139,3 +139,21 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
     def __init__(self,*args,**kwargs):
         super(CategoryDetailSerializer,self).__init__(*args,**kwargs)
         # self.Meta.depth = 1
+
+
+#   WishList
+class WishListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.WishList
+        fields = ['id','product','customer']
+
+    def __init__(self,*args,**kwargs):
+        super(WishListSerializer,self).__init__(*args,**kwargs)
+        # self.Meta.depth = 1
+
+
+    def to_representation(self,instance):
+        response = super().to_representation(instance)
+        response['customer'] = CustomerSerializer(instance.customer).data
+        response['product'] = ProductDetailSerializer(instance.product).data
+        return response
