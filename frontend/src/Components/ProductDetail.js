@@ -1,6 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-import logo from '../logo.svg';
-import SingleProduct from './SingleProduct';
 import { useContext, useEffect, useState } from 'react';
 import SingleRelatedProduct from './SingleRelatedProduct';
 import { UserContext, CartContext, CurrencyContext } from '../Context';
@@ -37,6 +35,7 @@ function ProductDetail() {
                 setProductTags(data.tag_list)
             })
     }
+    
     console.log(productData)
     function fetchRelatedData(baseUrl) {
         fetch(baseUrl)
