@@ -24,6 +24,7 @@ urlpatterns = [
     path('user/<int:pk>/', views.UserDetail.as_view()),
     path('customers/login/', views.customer_login,name='customer_login'),
     path('customers/register/', views.customer_register,name='customer_login'),
+    path('address/', views.CustomerAddressViewSets.as_view({'get': 'list', 'post': 'create'})),
     #Orders
     path('orders/', views.OrderList.as_view()),
     path('order/<int:pk>/', views.OrderDetail.as_view()),
@@ -36,6 +37,10 @@ urlpatterns = [
     path('check-in-wishlist/', views.check_in_wishlist,name='check_in_wishlist'),
     path('remove-from-wishlist/', views.remove_from_wishlist,name='check_in_wishlist'),
     path('customer/<int:pk>/wishitems/', views.CustomerWishItemList.as_view()),
+    path('customer/<int:pk>/address-list/', views.CustomerAddressList.as_view()),
+    
+    path('mark-default-address/<int:pk>/', views.mark_default_address,name='mark_default_address'),
+    path('customer/dashboard/<int:pk>', views.customer_dashboard,name='customer_dashboard'),
 ]
 
 

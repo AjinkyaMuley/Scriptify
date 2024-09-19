@@ -9,8 +9,8 @@ function Wishlist() {
     const { currencyData } = useContext(CurrencyContext)
     const baseUrl = 'http://127.0.0.1:8000/api';
     const customerId = localStorage.getItem('customer_id');
-    const [wishItems, setWishItems] = useState([]);
     const baseUrlForImage = 'http://127.0.0.1:8000';
+    const [wishItems, setWishItems] = useState([]);
 
     useEffect(() => {
         fetchData(baseUrl + '/customer/' + customerId + '/wishitems')

@@ -42,6 +42,7 @@ import SellerChangePassword from './Components/Seller/SellerChangePassword';
 import TagProducts from './Components/TagProducts';
 import { CartContext, CurrencyContext, UserContext } from './Context';
 import { useState } from 'react';
+import UpdateAddress from './Components/Customer/UpdateAddress';
 
 const checkCart = localStorage.getItem('cartData')
 const currentCurrency = localStorage.getItem('currency');
@@ -78,6 +79,7 @@ function App() {
           <Route path='/customer/change-password' element={<ChangePassword />} />
           <Route path='/customer/addresses' element={<AddressList />} />
           <Route path='/customer/add-address' element={<AddAddress />} />
+          <Route path='/customer/update-address/:address_id' element={<UpdateAddress />} />
           {/* Seller Routes */}
           <Route path='/seller/login' element={<SellerLogin />} />
           <Route path='/seller/register' element={<SellerRegister />} />
