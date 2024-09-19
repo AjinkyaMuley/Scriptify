@@ -10,6 +10,7 @@ urlpatterns = [
     #Vendors
     path('vendors/', views.VendorList.as_view()),
     path('vendor/<int:pk>/', views.VendorDetail.as_view()),
+    path('vendor/register/', views.vendor_register,name='vendor_register'),
     #Products
     path('products/', views.ProductList.as_view()),
     path('products/<str:tag>', views.TagProductList.as_view()),
@@ -23,7 +24,7 @@ urlpatterns = [
     path('customer/<int:pk>/', views.CustomerDetail.as_view()),
     path('user/<int:pk>/', views.UserDetail.as_view()),
     path('customers/login/', views.customer_login,name='customer_login'),
-    path('customers/register/', views.customer_register,name='customer_login'),
+    path('customers/register/', views.customer_register,name='customer_register'),
     path('address/', views.CustomerAddressViewSets.as_view({'get': 'list', 'post': 'create'})),
     #Orders
     path('orders/', views.OrderList.as_view()),

@@ -19,6 +19,58 @@ class VendorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Vendor.objects.all()
     serializer_class = serializers.VendorDetailSerializer
 
+@csrf_exempt
+def vendor_register(request):
+
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    mobile = request.POST.get('mobile')
+    address = request.POST.get('address')
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    try:
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            username=username,
+            password=password
+        )
+
+        if user:
+            # Create Customer
+            try:
+                vendor = models.Vendor.objects.create(
+                    user=user,
+                    mobile=mobile,
+                    address = address
+                )
+                msg={
+                    'bool' : True,
+                    'user' : user.id,
+                    'vendor' : vendor.id,
+                    'msg' : 'Thank You for registering. You can login now.'
+                }
+            except IntegrityError:
+                msg={
+                    'bool' : False,
+                    'msg' : 'Mobile already exists'
+                }
+        else:
+            msg={
+                'bool' : False,
+                'msg' : 'Oops... Something went wrong'
+            }
+
+    except IntegrityError:
+        msg={
+            'bool' : False,
+            'msg' : 'Email or username already exists'
+        }
+
+    return JsonResponse(msg)
 
 
 class ProductList(generics.ListCreateAPIView):

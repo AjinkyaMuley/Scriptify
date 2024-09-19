@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 #    Vendor Models
 class Vendor(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+    mobile = models.PositiveBigIntegerField(unique=True,null=True)
     address = models.TextField(null=True)
+    profile_img = models.ImageField(upload_to='seller-imgs/',null=True)
     
     def __str__(self):
         return self.user.username
