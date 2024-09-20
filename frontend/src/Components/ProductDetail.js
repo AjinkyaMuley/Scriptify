@@ -8,7 +8,7 @@ function ProductDetail() {
     const baseUrl = 'http://127.0.0.1:8000/api'
     const [productData, setProductData] = useState([]);
     const [productImgs, setProductImgs] = useState([]);
-    const [productTags, setProductTags] = useState([]);
+    const [productTags, setProductTags] = useState('');
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [cartButtonClickedStatus, setCartButtonClickedStatus] = useState(false)
     const { product_slug, product_id } = useParams();
@@ -32,7 +32,7 @@ function ProductDetail() {
             .then((data) => {
                 setProductData(data);
                 setProductImgs(data.product_imgs)
-                setProductTags(data.tag_list)
+                setProductTags(data.tags)
             })
     }
     
@@ -44,10 +44,10 @@ function ProductDetail() {
                 setRelatedProducts(data.results)
             })
     }
-
+    const splitTags = productTags.split(',')
     const tagsLinks = []
-    for (let i = 0; i < productTags.length; i++) {
-        let tag = productTags[i].trim();
+    for (let i = 0; i < splitTags.length; i++) {
+        let tag = splitTags[i].trim();
         tagsLinks.push(<Link className='badge bg-secondary text-white me-1' to={`/products/${tag}`}>{tag}</Link>)
     }
     function isProductInCart(productId, cartData) {
