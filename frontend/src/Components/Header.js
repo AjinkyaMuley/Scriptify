@@ -1,20 +1,22 @@
 import { Link } from "react-router-dom"
 import { useContext, useState } from "react";
-import { UserContext, CartContext,CurrencyContext } from "../Context";
+import { UserContext, CartContext, CurrencyContext } from "../Context";
 
 function Header() {
     const userContext = useContext(UserContext);
     const { cartData, setCartData } = useContext(CartContext);
 
-    const {currencyData,setCurrencyData} = useContext(CurrencyContext)
+    const check_vendor = localStorage.getItem('vendor_login')
+
+    const { currencyData, setCurrencyData } = useContext(CurrencyContext)
 
     const changeCurrency = (e) => {
         var _currency = (e.target.value);
-        localStorage.setItem('currency',_currency)
+        localStorage.setItem('currency', _currency)
         setCurrencyData(_currency)
         console.log(localStorage.getItem('currency'))
     }
-    
+
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-success">
@@ -57,11 +59,20 @@ function Header() {
                                     Vendor Panel
                                 </a>
                                 <ul className="dropdown-menu">
-                                    <li><Link to="/seller/register" className="dropdown-item">Register</Link></li>
-                                    <li><Link to="/seller/login" className="dropdown-item">Login</Link></li>
-                                    <li><hr className="dropdown-divider" /></li>
-                                    <li><Link to="/seller/dashboard" className="dropdown-item">Dashboard</Link></li>
-                                    <li><Link to="/" className="dropdown-item">Logout</Link></li>
+                                    {
+                                        check_vendor &&
+                                        <>
+                                            <li><Link to="/seller/dashboard" className="dropdown-item">Dashboard</Link></li>
+                                            <li><Link to="/seller/logout" className="dropdown-item">Logout</Link></li>
+                                        </>
+                                    }
+                                    {
+                                        !check_vendor &&
+                                        <>
+                                            <li><Link to="/seller/register" className="dropdown-item">Register</Link></li>
+                                            <li><Link to="/seller/login" className="dropdown-item">Login</Link></li>
+                                        </>
+                                    }
                                 </ul>
                             </li>
                             <li className="nav-item">

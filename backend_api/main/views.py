@@ -73,6 +73,29 @@ def vendor_register(request):
     return JsonResponse(msg)
 
 
+@csrf_exempt
+def vendor_login(request):
+
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = authenticate(username=username,password=password)
+
+    if user:
+        vendor = models.Vendor.objects.get(user=user)
+        msg={
+            'bool' : True,
+            'user' : user.username,
+            'id' : vendor.id,
+        }
+    else:
+        msg={
+            'bool' : False,
+            'msg' : 'Invalid username or password'
+        }
+
+    return JsonResponse(msg)
+
+
 class ProductList(generics.ListCreateAPIView):
     queryset = models.Product.objects.all()
     serializer_class = serializers.ProductListSerializer

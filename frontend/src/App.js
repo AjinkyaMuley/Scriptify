@@ -43,6 +43,7 @@ import TagProducts from './Components/TagProducts';
 import { CartContext, CurrencyContext, UserContext } from './Context';
 import { useState } from 'react';
 import UpdateAddress from './Components/Customer/UpdateAddress';
+import SellerLogout from './Components/Seller/SellerLogout';
 
 const checkCart = localStorage.getItem('cartData')
 const currentCurrency = localStorage.getItem('currency');
@@ -82,6 +83,7 @@ function App() {
           <Route path='/customer/update-address/:address_id' element={<UpdateAddress />} />
           {/* Seller Routes */}
           <Route path='/seller/login' element={<SellerLogin />} />
+          <Route path='/seller/logout' element={<SellerLogout />} />
           <Route path='/seller/register' element={<SellerRegister />} />
           <Route path='/seller/dashboard' element={<SellerDashboard />} />
           <Route path='/seller/products' element={<SellerProducts />} />
