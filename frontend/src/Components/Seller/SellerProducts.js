@@ -1,8 +1,27 @@
 import { Link } from 'react-router-dom';
 import logo from '../../logo.svg';
 import Sidebar from './SellerSidebar';
+import { useEffect, useState } from 'react';
 
 function SellerProducts(props) {
+    const baseUrl = 'http://127.0.0.1:8000/api';
+    const [productData, setProductData] = useState([])
+
+
+    useEffect(() => {
+        fetchData(baseUrl + '/products/')
+    }, [])
+
+    function fetchData(baseUrl) {
+        fetch(baseUrl)
+            .then((response) => response.json())
+            .then((data) => {
+                setProductData(data.results)
+            })
+    }
+
+    console.log(productData)
+
     return (
         <div className='container mt-4'>
             <div className='row'>
@@ -16,28 +35,42 @@ function SellerProducts(props) {
                         </div>
                     </div>
                     <div className='table-responsive'>
-                        <table className='table table-bordered'>
+                        <table className='table table-bordered table-hover'>
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Products</th>
                                     <th>Price</th>
+                                    <th>USD Price</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Product Title</td>
-                                    <td>500</td>
-                                    <td>Published</td>
-                                    <td>
-                                        <a href='#' className='btn btn-info'>View</a>
-                                        <a href='#' className='btn btn-primary ms-1'>Edit</a>
-                                        <a href='#' className='btn btn-danger ms-1'>Delete</a>
-                                    </td>
-                                </tr>
+                                {
+                                    productData.map((product, index) => {
+                                        return (
+                                            <tr>
+                                                <td>{index + 1}</td>
+                                                <td><Link to={`/seller/update-product/${product.id}`}>{product.title}</Link></td>
+                                                <td>&#8377;{product.price}</td>
+                                                <td>${product.usd_price}</td>
+                                                <td>
+                                                    {
+                                                        !product.publish_status && 'Pending'
+                                                    }
+                                                    {
+                                                        product.publish_status && <span className='text-success'>Published</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <a href='#' className='btn btn-primary ms-1'>Edit</a>
+                                                    <a href='#' className='btn btn-danger ms-1'>Delete</a>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>

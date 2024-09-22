@@ -44,6 +44,7 @@ import { CartContext, CurrencyContext, UserContext } from './Context';
 import { useState } from 'react';
 import UpdateAddress from './Components/Customer/UpdateAddress';
 import SellerLogout from './Components/Seller/SellerLogout';
+import UpdateProduct from './Components/Seller/UpdateProduct';
 
 const checkCart = localStorage.getItem('cartData')
 const currentCurrency = localStorage.getItem('currency');
@@ -88,6 +89,7 @@ function App() {
           <Route path='/seller/dashboard' element={<SellerDashboard />} />
           <Route path='/seller/products' element={<SellerProducts />} />
           <Route path='/seller/add-product' element={<AddProduct />} />
+          <Route path='/seller/update-product/:product_id' element={<UpdateProduct />} />
           <Route path='/seller/orders' element={<SellerOrders />} />
           <Route path='/seller/customers' element={<Customers />} />
           <Route path='/seller/reports' element={<Reports />} />

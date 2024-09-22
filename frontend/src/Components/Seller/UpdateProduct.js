@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import Sidebar from './SellerSidebar';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-function AddProduct(props) {
+function UpdateProduct(props) {
+    const { product_id } = useParams()
     const baseUrl = 'http://127.0.0.1:8000/api';
     const [categoryData, setCategoryData] = useState([])
     const vendor_id = localStorage.getItem('vendor_id');
@@ -17,9 +19,7 @@ function AddProduct(props) {
         'price': '',
         'usd_price': '',
         'tags': '',
-        'image': '',
         'demo_url': '',
-        'product_file': '',
     });
     const [imgUploadErrorMsg, setImgUploadErrorMsg] = useState('')
     const [imgUploadSuccessMsg, setImgUploadSuccessMsg] = useState('')
@@ -27,6 +27,7 @@ function AddProduct(props) {
 
     useEffect(() => {
         fetchData(baseUrl + '/categories/')
+        fetchProductData(baseUrl + '/product/' + product_id)
     }, [])
 
     function fetchData(baseUrl) {
@@ -37,68 +38,84 @@ function AddProduct(props) {
             })
     }
 
+    function fetchProductData(baseUrl) {
+        fetch(baseUrl)
+            .then((response) => response.json())
+            .then((data) => {
+                setProductData({
+                    category: data.category,
+                    'title': data.title,
+                    'slug': data.slug,
+                    'detail': data.detail,
+                    'price': data.price,
+                    'usd_price': data.usd_price,
+                    'tags': data.tags,
+                    'image': data.image,
+                    'demo_url': data.demo_url,
+                    'product_file': data.product_file,
+                })
+            })
+    }
+    console.log(productData.vendor)
+
     const submitHandler = () => {
         const formData = new FormData();
-        formData.append('vendor', productData.vendor);
-        formData.append('category', (productData.category));
+        formData.append('vendor', vendor_id); // Convert to integer
+        formData.append('category', parseInt(productData.category)); // Convert to integer
         formData.append('slug', productData.slug);
         formData.append('title', productData.title);
         formData.append('usd_price', productData.usd_price);
         formData.append('price', productData.price);
         formData.append('tags', productData.tags);
-        formData.append('image', productData.image);
         formData.append('demo_url', productData.demo_url);
         formData.append('detail', productData.detail);
-        formData.append('product_file', productData.product_file);
+    
         // Submit Data
-        axios.post(baseUrl + '/products/', formData, {
+        axios.patch(baseUrl + '/product/' + product_id + '/', formData, {
             headers: {
                 'content-type': 'multipart/form-data'
             }
         })
-            .then(function (response) {
-                if (response.status === 201) {
-                    setProductData({
-                        'category': '',
-                        'vendor': vendor_id,
-                        'title': '',
-                        'slug': '',
-                        'detail': '',
-                        'price': '',
-                        'usd_price': '',
-                        'tags': '',
-                        'image': '',
-                        'demo_url': '',
-                        'product_file': '',
+        .then(function (response) {
+            if (response.status === 201) {
+                setProductData({
+                    'category': '',
+                    'vendor': vendor_id,
+                    'title': '',
+                    'slug': '',
+                    'detail': '',
+                    'price': '',
+                    'usd_price': '',
+                    'tags': '',
+                    'demo_url': '',
+                });
+                setErrorMsg('');
+                setSuccessMsg(response.statusText);
+    
+                // submit images
+                for (let i = 0; i < productImgs.length; i++) {
+                    const ImageFormData = new FormData();
+                    ImageFormData.append('product', response.data.id); // Assuming response.data.id is the product PK
+                    ImageFormData.append('image', productImgs[i]);
+    
+                    axios.post(baseUrl + '/product-imgs/', ImageFormData)
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
                     });
-                    setErrorMsg('')
-                    setSuccessMsg(response.statusText)
-
-                    // submit images
-                    for (let i = 0; i < productImgs.length; i++) {
-                        const ImageFormData = new FormData()
-                        ImageFormData.append('product',response.data.id)
-                        ImageFormData.append('image',productImgs[i])
-
-                        axios.post(baseUrl + '/product-imgs/', ImageFormData)
-                            .then(function (response) {
-                                console.log(response)
-                            })
-                            .catch(function (error) {
-                                console.log(error)
-                            })
-
-                    }
                 }
-                else {
-                    setErrorMsg(response.statusText);
-                    setSuccessMsg('')
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-    }
+            } else {
+                setErrorMsg(response.statusText);
+                setSuccessMsg('');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    };
+    
 
     const inputHandler = (event) => {
         setProductData({
@@ -132,7 +149,7 @@ function AddProduct(props) {
                 </div>
                 <div className='col-md-9 col-12 mb-2'>
                     <div className='card'>
-                        <h4 className='card-header'>Add Product</h4>
+                        <h4 className='card-header'>Update Product</h4>
                         <div className='card-body'>
                             {successMsg && <p className='text-success'>{successMsg}</p>}
                             {errorMsg && <p className='text-success'>{errorMsg}</p>}
@@ -201,4 +218,4 @@ function AddProduct(props) {
     )
 }
 
-export default AddProduct
+export default UpdateProduct

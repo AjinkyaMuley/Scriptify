@@ -115,6 +115,12 @@ class ProductList(generics.ListCreateAPIView):
             limit = int(self.request.GET['fetch_limit'])
             qs = qs.order_by('-id')[:limit]
         return qs
+
+
+class ProductImgsList(generics.ListCreateAPIView):
+    queryset = models.ProductImage.objects.all()
+    serializer_class = serializers.ProductImageSerializer
+    
     
 
 class TagProductList(generics.ListCreateAPIView):
